@@ -25,34 +25,26 @@ def encode_image(arr: np.array) -> Base64OutputEncodedModel:
 async def transform(data: Base64InputEncodedModel) -> Base64OutputEncodedModel:
     img = decode_image(data)
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = find_faces(img_gray)
-    img_annotated = img.copy()
-    face_images = []
-    for x, y, w, h in faces:
-        if w % 96 != 0:
-            closest_multiple = np.ceil(w / 96) * 96
-            diff = INPUT_SIZE[1] - closest_multiple
-            x -= int(diff//2)
-            if x < 0:
-                w += abs(x)
-                x = 0
-            w += int(diff//2)
-        if h % 96 != 0:
-            closest_multiple = np.ceil(w / 96) * 96
-            diff = INPUT_SIZE[0] - closest_multiple
-            y -= int(diff//2)
-            if y < 0:
-                h += abs(y)
-                y = 0
-            h += int(diff//2)
-        print(x, y, w, h)
-        img_annotated = cv2.rectangle(img_annotated, (x, y), (x+w, y+h), color=(255, 0, 0), thickness=3)
-        face_images.append(img_gray[y:(y+h), x:(x+w)])
-        
-    landmark_points = filter_utils.model_output_to_keypoints_coordinates(infer(img_gray))
+    faces = find_faces(img)
     glasses = Filter('api/filters/data/sunglasses.json')
-    if len(face_images) > 0:
-        face_img = filter_utils.apply_filter_to_img(face_images[0], glasses, landmark_points)
-        return encode_image(face_img)
-    else:
-        return encode_image(img_annotated)
+    ret = img.copy()
+    for x, y, w, h in faces:
+        x_center = (x + w // 2) 
+        y_center = (y + h // 2)
+        w, h = 96 * 2, 96 * 2
+        x = x_center - w//2
+        y = y_center - h//2
+        if x < 0:
+            x = 0
+        if y < 0:
+            y = 0
+        if x + w >= img.shape[1]:
+            x += x + w - img.shape[1] - 1
+        if y + h >= img.shape[0]:
+            y += y + h - img.shape[0] - 1
+        print(x, y, w, h)
+        face_img = img_gray[y:(y+h), x:(x+w)]
+        landmark_points = filter_utils.model_output_to_keypoints_coordinates(infer(face_img))
+        ret = filter_utils.apply_filter_to_img(ret, glasses, landmark_points, (x, y, w, h))
+    return encode_image(ret)
+        

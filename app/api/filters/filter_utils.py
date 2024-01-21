@@ -30,13 +30,13 @@ def model_output_to_keypoints_coordinates(output: np.array) -> dict:
         ret[keypoint_name] = keypoint_coordinates
     return ret
 
-def apply_filter_to_img(img: np.array, filter: Filter, keypoints: dict) -> np.array:
-    if img.shape != INPUT_SIZE:
-        img = cv2.resize(img, INPUT_SIZE[:2])
-    warped = cv2.cvtColor(filter.warp_to_points(keypoints), cv2.COLOR_BGR2GRAY)
+def apply_filter_to_img(img: np.array, filter: Filter, keypoints: dict, bounds: tuple = None) -> np.array:
+    if bounds is not None:
+        for k in keypoints:
+            keypoints[k][0] = (keypoints[k][0] / INPUT_SIZE[1]) * bounds[2] + bounds[0]
+            keypoints[k][1] = (keypoints[k][1] / INPUT_SIZE[0]) * bounds[3] + bounds[1]
+    warped = filter.warp_to_points(keypoints, img.shape)
     pseudo_alpha_filter = (warped > 0).astype(np.uint8)
-    inverse_pseudo_alpha_filter = np.ones(img.shape[:2]) - pseudo_alpha_filter
-    ret = warped * pseudo_alpha_filter + inverse_pseudo_alpha_filter * img.squeeze()
-    for _, v in keypoints.items():
-        ret = cv2.circle(ret, (int(v[0] * INPUT_SIZE[1]), int(v[1] * INPUT_SIZE[0])), 10, 255)
+    inverse_pseudo_alpha_filter = np.ones(img.shape) - pseudo_alpha_filter
+    ret = warped * pseudo_alpha_filter + inverse_pseudo_alpha_filter * img
     return ret
