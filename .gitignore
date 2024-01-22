@@ -4,3 +4,4 @@ training_data/*
 *.csv
 *.keras
 __pycache__/*
+training/*
