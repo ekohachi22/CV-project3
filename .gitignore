@@ -3,4 +3,5 @@ training_data/*
 *.zip
 *.csv
 *.keras
-__pycache__/*
+*.onnx
+__pycache__
