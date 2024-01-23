@@ -5,3 +5,4 @@ training_data/*
 *.keras
 __pycache__/*
 training/*
+model_weights*.h5
