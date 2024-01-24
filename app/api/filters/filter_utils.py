@@ -34,6 +34,7 @@ def apply_filter_to_img(img: np.array, filter: Filter, keypoints: dict, bounds: 
         for k in keypoints:
             keypoints[k][0] = (keypoints[k][0] / INPUT_SIZE[1]) * bounds[2] + bounds[0]
             keypoints[k][1] = (keypoints[k][1] / INPUT_SIZE[0]) * bounds[3] + bounds[1]
+    print(keypoints)
     warped = filter.warp_to_points(keypoints, img.shape)
     pseudo_alpha_filter = (warped > 0).astype(np.uint8)
     inverse_pseudo_alpha_filter = np.ones(img.shape) - pseudo_alpha_filter

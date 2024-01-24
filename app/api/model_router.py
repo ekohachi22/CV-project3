@@ -29,22 +29,11 @@ async def transform(data: Base64InputEncodedModel) -> Base64OutputEncodedModel:
     glasses = Filter('api/filters/data/sunglasses.json')
     ret = img.copy()
     for x, y, w, h in faces:
-        x_center = (x + w // 2) 
-        y_center = (y + h // 2)
-        w, h = 96 * 2, 96 * 2
-        x = x_center - w//2
-        y = y_center - h//2
-        if x < 0:
-            x = 0
-        if y < 0:
-            y = 0
-        if x + w >= img.shape[1]:
-            x += x + w - img.shape[1] - 1
-        if y + h >= img.shape[0]:
-            y += y + h - img.shape[0] - 1
         print(x, y, w, h)
         face_img = img_gray[y:(y+h), x:(x+w)]
-        landmark_points = filter_utils.model_output_to_keypoints_coordinates(infer(face_img))
+        inf = infer(face_img)
+        print(inf)
+        landmark_points = filter_utils.model_output_to_keypoints_coordinates(inf/100)
         ret = filter_utils.apply_filter_to_img(ret, glasses, landmark_points, (x, y, w, h))
     return encode_image(ret)
         

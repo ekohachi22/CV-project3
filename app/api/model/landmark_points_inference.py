@@ -3,8 +3,8 @@ import cv2
 import onnxruntime as ort
 import numpy as np
 
-_model = ort.InferenceSession("api/model/weights/model3_Adam_mean_squared_error.onnx")
-INPUT_SIZE = (96, 96, 1)
+_model = ort.InferenceSession("api/model/weights/landmark.onnx")
+INPUT_SIZE = (224, 224, 1)
 
 def infer(img: np.array) -> list:
     if img.shape != INPUT_SIZE:
