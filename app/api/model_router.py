@@ -34,6 +34,6 @@ async def transform(data: Base64InputEncodedModel) -> Base64OutputEncodedModel:
         inf = infer(face_img)
         print(inf)
         landmark_points = filter_utils.model_output_to_keypoints_coordinates(inf/100)
-        ret = filter_utils.apply_filter_to_img(ret, glasses, landmark_points, (x, y, w, h))
+        ret = filter_utils.apply_filter_to_img(ret, glasses, landmark_points, (x, y))
     return encode_image(ret)
         

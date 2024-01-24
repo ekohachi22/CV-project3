@@ -1,8 +1,8 @@
 {
     "file_path": "sunglasses.webp",
     "reference_points": {
-        "right_eye_center": [378, 303],
-        "left_eye_center": [1005, 303],
+        "right_eye_center": [378, 353],
+        "left_eye_center": [1005, 353],
         "mouth_right_corner": [200, 1250],
         "mouth_left_corner": [1050, 1250]
     }
