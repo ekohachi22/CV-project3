@@ -3,6 +3,7 @@ training_data/*
 *.zip
 *.csv
 *.keras
-__pycache__/*
+*.onnx
+__pycache__
 training/*
 model_weights*.h5
