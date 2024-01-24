@@ -5,3 +5,5 @@ training_data/*
 *.keras
 *.onnx
 __pycache__
+training/*
+model_weights*.h5
